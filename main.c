@@ -12,34 +12,7 @@
 
 #include "so_long.h"
 
-// Função que trata o clique do mouse
-// button == 1 é o botão esquerdo do mouse
-// x e y são as coordenadas do clique
-int	mouse_click(int button, int x, int y, void *param)
-{
-	t_data	*data;
-	int		color_red;
-	int		color_green;
-	int		pixel_index;
-
-	data = (t_data *)param;
-	color_red = 0xFF0000;
-	color_green = 0x00FF00;
-	if (button == 1)
-	{
-		pixel_index = (y * data->size) + (x * (data->bpp / 8));
-		*(uint32_t *)(data->data + pixel_index) = color_green;
-	}
-	else if (button == 3)
-	{
-		pixel_index = (y * data->size) + (x * (data->bpp / 8));
-		*(uint32_t *)(data->data + pixel_index) = color_red;
-	}
-	mlx_put_image_to_window(data->mlx, data->win, data->img, 0, 0);
-	return (0);
-}
-
-void	clear_screen(t_data *data, int color)
+void	color_screen(t_data *data, int color)
 {
 	int	x;
 	int	y;
@@ -62,21 +35,34 @@ void	clear_screen(t_data *data, int color)
 }
 
 // Função que fecha a janela
-int	close_window(void *param)
+int	close_window(t_data *data)
 {
-	t_data	*data;
-
-	data = (t_data *)param;
+	mlx_destroy_image(data->mlx, data->img);
 	mlx_destroy_window(data->mlx, data->win);
+	mlx_destroy_display(data->mlx);
+	free(data->mlx);
 	exit(0);
 }
 
 // Função que trata o pressionamento de teclas
 // keycode == 65307 é a tecla ESC
-int	key_press(int keycode, void *param, void *mlx, void *win)
+int	key_press(int keycode, void *param)
 {
 	if (keycode == 65307)
 		close_window(param);
+	// Tecla W ou up para pintar a tela de azul
+	if (keycode == 119 || keycode == 65362)
+		color_screen(param, 0x0000FF);
+	// Tecla A ou left para pintar a tela de verde
+	if (keycode == 97 || keycode == 65361)
+		color_screen(param, 0x00FF00);
+	// Tecla S ou down para pintar a tela de vermelho
+	if (keycode == 115 || keycode == 65364)
+		color_screen(param, 0xFF0000);
+	// Tecla D ou right para pintar a tela de amarelo
+	if (keycode == 100 || keycode == 65363)
+		color_screen(param, 0xFFFF00);
+
 	return (0);
 }
 
@@ -97,9 +83,6 @@ int	main(void)
 	//endian: Contém o valor 0 ou 1,
 	// que indica se a máquina é little-endian ou big-endian.
 	data.data = mlx_get_data_addr(data.img, &data.bpp, &data.size, &data.endian);
-	// Limpa a tela com a cor preta
-	clear_screen(&data, 0x000000);
-	mlx_mouse_hook(data.win, mouse_click, &data);
 	// Define qual função será chamada quando fechar a janela for chamado
 	mlx_hook(data.win, 17, 0, close_window, &data);
 	// Define qual função será chamada quando uma tecla for pressionada
@@ -108,27 +91,3 @@ int	main(void)
 	mlx_loop(data.mlx);
 	return (0);
 }
-/*
-Desenhando uma linha vermelha na diagonal
-
-	// Definindo a cor vermelha
-	int	color_red = 0xFF0000;
-	// Desenhando em diferentes posições
-	int		x;
-	int		y;
-	int		i;
-	int		pixel_index;
-	i = 0;
-	// Desenhando uma linha vermelha
-	while (i < 800)
-	{
-		x = i;
-		y = i;
-		pixel_index = (y * size_line) + (x * (bpp / 8));
-		*(uint32_t *)(data + pixel_index) = color_red;
-		i++;
-	}
-	// Coloca a imagem na janela
-	mlx_put_image_to_window(mlx, win, img, 0, 0);
-
-	*/
