@@ -52,24 +52,178 @@ int	key_press(int keycode, void *param)
 		close_window(param);
 	// Tecla W ou up para pintar a tela de azul
 	if (keycode == 119 || keycode == 65362)
+	{
+		ft_printf("painting screen blue\n");
 		color_screen(param, 0x0000FF);
+	}
 	// Tecla A ou left para pintar a tela de verde
 	if (keycode == 97 || keycode == 65361)
+	{
+		ft_printf("painting screen green\n");
 		color_screen(param, 0x00FF00);
+	}
 	// Tecla S ou down para pintar a tela de vermelho
 	if (keycode == 115 || keycode == 65364)
+	{
+		ft_printf("painting screen red\n");
 		color_screen(param, 0xFF0000);
+	}
 	// Tecla D ou right para pintar a tela de amarelo
 	if (keycode == 100 || keycode == 65363)
+	{
+		ft_printf("painting screen yellow\n");
 		color_screen(param, 0xFFFF00);
+	}
 
 	return (0);
 }
 
-int	main(void)
+int	check_extension(char *file)
+{
+	char	*ber;
+	char	*file_extension;
+
+	ber = ".ber";
+	file_extension = file + ft_strlen(file) - ft_strlen(ber);
+	return (ft_strncmp(file_extension, ber, ft_strlen(ber)));
+}
+
+
+int	check_map_content(char *line, size_t len)
+{
+	int	i;
+
+	i = 0;
+	if (line[i] != '1')
+		return (1);
+	while (line[i] && line[i] != '\n')
+	{
+		if (ft_strlen(line) != len)
+			return (1);
+		if (line[i] == '1')
+			ft_printf("1");
+		else if (line[i] == 'P')
+			ft_printf("P");
+		else if (line[i] == 'E')
+			ft_printf("E");
+		else if (line[i] == 'C')
+			ft_printf("C");
+		else if (line[i] == '0')
+			ft_printf("0");
+		else
+			return (1);
+		i++;
+	}
+	if (line[i - 1] != '1')
+		return (1);
+	ft_printf("\n");
+	return (0);
+}
+
+int	check_wall(char *line)
+{
+	int	i;
+
+	i = 0;
+	while (line[i] && line[i] != '\n')
+	{
+		if (line[i] != '1')
+			return (1);
+		i++;
+	}
+	return (0);
+}
+
+int	count_lines(char *file)
+{
+	int		n_lines;
+	char	buffer;
+	int		bytes_read;
+	int		fd;
+
+	fd = open(file, O_RDONLY);
+	if (fd < 0)
+		return (0);
+	n_lines = 0;
+	bytes_read = read(fd, &buffer, 1);
+	while (bytes_read > 0)
+    {
+		if (buffer == '\n')
+			n_lines++;
+		bytes_read = read(fd, &buffer, 1);
+    }
+	close(fd);
+	return (n_lines);
+}
+
+
+int	check_map(char *file)
+{
+	char	**line;
+	size_t		len;
+	int		i;
+	int		fd;
+	int		n_lines;
+
+	i = 0;
+	n_lines = count_lines(file);
+	if (!n_lines)
+		return (1);
+	line = malloc(sizeof(char *) * (n_lines + 1));
+	if (!line)
+		return (1);
+	fd = open(file, O_RDONLY);
+	line[i] = get_next_line(fd);
+	len = ft_strlen(line[i]);
+	if (check_wall(line[i]))
+		return (1);
+	while (line[i])
+	{
+		if (check_map_content(line[i], len))
+			return (1);
+		i++;
+		line[i] = get_next_line(fd);
+	}
+	if (check_wall(line[i - 1]))
+		return (1);
+	line[i] = NULL;
+	close(fd);
+	return (0);
+}
+
+void	init_map(t_map *map)
+{
+	map->map = NULL;
+	map->rows = 0;
+	map->cols = 0;
+	map->player_x = -1;
+	map->player_y = -1;
+	map->collectibles = 0;
+	map->exits = 0;
+	map->movements = 0;
+	map->collectibles_collected = 0;
+	map->exits_reached = 0;
+	map->collectibles_pos = NULL;
+	map->exits_pos = NULL;
+}
+
+int	main(int argc, char **argv)
 {
 	t_data	data;
+	t_map	*map;
 
+	if (argc != 2 || check_extension(argv[1]))
+	{
+		write(1, "Error\n", 6);
+		return (1);
+	}
+	map = malloc(sizeof(t_map));
+	init_map(map);
+	if (check_map(argv[1]))
+	{
+		write(1, "Error\n", 6);
+		return (1);
+	}
 	// Inicializando a janela
 	data.mlx = mlx_init();
 	// Criando a janela

@@ -16,9 +16,9 @@ LIBFTPRINTF_DIR = ./ft_printf
 LIBMLX = -I./minilibx-linux -L./minilibx-linux -lmlx -lX11 -lXext -lm -lbsd
 CC = cc
 CFLAGS = -Wall -Wextra -Werror
-SRCS = main.c
+SRCS = main.c ./get_next_line/get_next_line.c ./get_next_line/get_next_line_utils.c
 OBJS = $(SRCS:.c=.o)
-RM = rm -r
+RM = rm -rf
 
 all: $(NAME)
 

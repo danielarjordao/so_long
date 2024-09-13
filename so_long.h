@@ -14,6 +14,8 @@
 # define SO_LONG_H
 
 # include "./minilibx-linux/mlx.h"
+# include "./ft_printf/ft_printf.h"
+# include "./get_next_line/get_next_line.h"
 # include <stdlib.h>
 # include <stdint.h>
 # include <stdio.h>
@@ -31,5 +33,22 @@ typedef struct s_data
 	int		size;
 	int		endian;
 }	t_data;
+
+typedef struct s_map
+{
+	char	**map;
+	int		rows;
+	int		cols;
+	int		player_x;
+	int		player_y;
+	int		collectibles;
+	int		exits;
+	int		movements;
+	int		collectibles_collected;
+	int		exits_reached;
+	int		**collectibles_pos;
+	int		**exits_pos;
+}	t_map;
+
 
 #endif
