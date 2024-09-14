@@ -34,16 +34,6 @@ void	color_screen(t_data *data, int color)
 	mlx_put_image_to_window(data->mlx, data->win, data->img, 0, 0);
 }
 
-// Função que fecha a janela
-int	close_window(t_data *data)
-{
-	mlx_destroy_image(data->mlx, data->img);
-	mlx_destroy_window(data->mlx, data->win);
-	mlx_destroy_display(data->mlx);
-	free(data->mlx);
-	exit(0);
-}
-
 // Função que trata o pressionamento de teclas
 // keycode == 65307 é a tecla ESC
 int	key_press(int keycode, void *param)
@@ -78,133 +68,45 @@ int	key_press(int keycode, void *param)
 	return (0);
 }
 
-int	check_extension(char *file)
+// Função que fecha a janela
+int	close_window(t_data *data)
 {
-	char	*ber;
-	char	*file_extension;
-
-	ber = ".ber";
-	file_extension = file + ft_strlen(file) - ft_strlen(ber);
-	return (ft_strncmp(file_extension, ber, ft_strlen(ber)));
+	mlx_destroy_image(data->mlx, data->img);
+	mlx_destroy_window(data->mlx, data->win);
+	mlx_destroy_display(data->mlx);
+	free(data->mlx);
+	exit(0);
 }
 
-
-int	check_map_content(char *line, size_t len)
+void free_array(char **array)
 {
 	int	i;
 
-	i = 0;
-	if (line[i] != '1')
-		return (1);
-	while (line[i] && line[i] != '\n')
+	if (!array)
+		return ;
+	if (array)
 	{
-		if (ft_strlen(line) != len)
-			return (1);
-		if (line[i] == '1')
-			ft_printf("1");
-		else if (line[i] == 'P')
-			ft_printf("P");
-		else if (line[i] == 'E')
-			ft_printf("E");
-		else if (line[i] == 'C')
-			ft_printf("C");
-		else if (line[i] == '0')
-			ft_printf("0");
-		else
-			return (1);
-		i++;
+		i = 0;
+		while (array[i])
+		{
+			free(array[i]);
+			array[i] = NULL;
+			i++;
+		}
+		free(array);
+		array = NULL;
 	}
-	if (line[i - 1] != '1')
-		return (1);
-	ft_printf("\n");
-	return (0);
 }
 
-int	check_wall(char *line)
+void free_map(t_map *map)
 {
-	int	i;
-
-	i = 0;
-	while (line[i] && line[i] != '\n')
+	if (!map)
+		return ;
+	if (map)
 	{
-		if (line[i] != '1')
-			return (1);
-		i++;
+		free(map);
+		map = NULL;
 	}
-	return (0);
-}
-
-int	count_lines(char *file)
-{
-	int		n_lines;
-	char	buffer;
-	int		bytes_read;
-	int		fd;
-
-	fd = open(file, O_RDONLY);
-	if (fd < 0)
-		return (0);
-	n_lines = 0;
-	bytes_read = read(fd, &buffer, 1);
-	while (bytes_read > 0)
-    {
-		if (buffer == '\n')
-			n_lines++;
-		bytes_read = read(fd, &buffer, 1);
-    }
-	close(fd);
-	return (n_lines);
-}
-
-
-int	check_map(char *file)
-{
-	char	**line;
-	size_t		len;
-	int		i;
-	int		fd;
-	int		n_lines;
-
-	i = 0;
-	n_lines = count_lines(file);
-	if (!n_lines)
-		return (1);
-	line = malloc(sizeof(char *) * (n_lines + 1));
-	if (!line)
-		return (1);
-	fd = open(file, O_RDONLY);
-	line[i] = get_next_line(fd);
-	len = ft_strlen(line[i]);
-	if (check_wall(line[i]))
-		return (1);
-	while (line[i])
-	{
-		if (check_map_content(line[i], len))
-			return (1);
-		i++;
-		line[i] = get_next_line(fd);
-	}
-	if (check_wall(line[i - 1]))
-		return (1);
-	line[i] = NULL;
-	close(fd);
-	return (0);
-}
-
-void	init_map(t_map *map)
-{
-	map->map = NULL;
-	map->rows = 0;
-	map->cols = 0;
-	map->player_x = -1;
-	map->player_y = -1;
-	map->collectibles = 0;
-	map->exits = 0;
-	map->movements = 0;
-	map->collectibles_collected = 0;
-	map->exits_reached = 0;
-	map->collectibles_pos = NULL;
-	map->exits_pos = NULL;
 }
 
 int	main(int argc, char **argv)
@@ -214,14 +116,14 @@ int	main(int argc, char **argv)
 
 	if (argc != 2 || check_extension(argv[1]))
 	{
-		write(1, "Error\n", 6);
+		write(2, "Error\n", 6);
 		return (1);
 	}
-	map = malloc(sizeof(t_map));
-	init_map(map);
-	if (check_map(argv[1]))
+	map = ft_calloc(1, sizeof(t_map));
+	if (check_map(argv[1], map))
 	{
-		write(1, "Error\n", 6);
+		write(2, "Error\n", 6);
+		free_map(map);
 		return (1);
 	}
 	// Inicializando a janela

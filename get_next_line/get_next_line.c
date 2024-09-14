@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dramos-j <dramos-j@student.42.fr>          +#+  +:+       +#+        */
+/*   By: dramos-j <dramos-j@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/06 12:25:02 by dramos-j          #+#    #+#             */
-/*   Updated: 2024/04/21 14:20:11 by dramos-j         ###   ########.fr       */
+/*   Updated: 2024/09/14 18:00:19 by dramos-j         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -119,7 +119,11 @@ char	*get_next_line(int fd)
 	int				testread;
 
 	if (fd < 0 || BUFFER_SIZE <= 0)
+	{
+		if (list)
+			clean_list(&list);
 		return (NULL);
+	}
 	testread = create_list(&list, fd);
 	if (testread == 2 && list)
 		clean_list(&list);
