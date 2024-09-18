@@ -12,28 +12,6 @@
 
 #include "so_long.h"
 
-void	color_screen(t_data *data, int color)
-{
-	int	x;
-	int	y;
-	int	pixel_index;
-
-	y = 0;
-	x = 0;
-	while (y < HEIGHT)
-	{
-		while (x < WIDTH)
-		{
-			pixel_index = (y * data->size) + (x * (data->bpp / 8));
-			*(uint32_t *)(data->data + pixel_index) = color;
-			x++;
-		}
-		x = 0;
-		y++;
-	}
-	mlx_put_image_to_window(data->mlx, data->win, data->img, 0, 0);
-}
-
 // Função que trata o pressionamento de teclas
 // keycode == 65307 é a tecla ESC
 int	key_press(int keycode, void *param)
@@ -43,26 +21,22 @@ int	key_press(int keycode, void *param)
 	// Tecla W ou up para pintar a tela de azul
 	if (keycode == 119 || keycode == 65362)
 	{
-		ft_printf("painting screen blue\n");
-		color_screen(param, 0x0000FF);
+		ft_printf("turn up\n");
 	}
 	// Tecla A ou left para pintar a tela de verde
 	if (keycode == 97 || keycode == 65361)
 	{
-		ft_printf("painting screen green\n");
-		color_screen(param, 0x00FF00);
+		ft_printf("turn left\n");
 	}
 	// Tecla S ou down para pintar a tela de vermelho
 	if (keycode == 115 || keycode == 65364)
 	{
-		ft_printf("painting screen red\n");
-		color_screen(param, 0xFF0000);
+		ft_printf("turn down\n");
 	}
 	// Tecla D ou right para pintar a tela de amarelo
 	if (keycode == 100 || keycode == 65363)
 	{
-		ft_printf("painting screen yellow\n");
-		color_screen(param, 0xFFFF00);
+		ft_printf("turn right\n");
 	}
 
 	return (0);
@@ -71,7 +45,6 @@ int	key_press(int keycode, void *param)
 // Função que fecha a janela
 int	close_window(t_data *data)
 {
-	mlx_destroy_image(data->mlx, data->img);
 	mlx_destroy_window(data->mlx, data->win);
 	mlx_destroy_display(data->mlx);
 	free(data->mlx);
@@ -113,33 +86,20 @@ int	main(int argc, char **argv)
 {
 	t_data	data;
 	t_map	*map;
+	t_texture	texture;
 
-	if (argc != 2 || check_extension(argv[1]))
-	{
-		write(2, "Error\n", 6);
-		return (1);
-	}
 	map = ft_calloc(1, sizeof(t_map));
-	if (check_map(argv[1], map))
+	if (argc != 2 || check_extension(argv[1]) || (check_map(argv[1], map)))
 	{
 		write(2, "Error\n", 6);
 		free_map(map);
 		return (1);
 	}
-	// Inicializando a janela
+	data.height = map->cols * 32;
+	data.width = map->rows * 32;
 	data.mlx = mlx_init();
-	// Criando a janela
-	data.win = mlx_new_window(data.mlx, WIDTH, HEIGHT, "so_long");
-	// Criando a imagem
-	data.img = mlx_new_image(data.mlx, WIDTH, HEIGHT);
-	// Obtendo informações da imagem
-	//data: Contém o endereço do primeiro byte da imagem.
-	//bpp: Contém o número de bits que compõem um pixel.
-	//size_line: Contém o número de bytes que compõem uma linha da imagem.
-	//endian: Contém o valor 0 ou 1,
-	// que indica se a máquina é little-endian ou big-endian.
-	data.data = mlx_get_data_addr(data.img, &data.bpp, &data.size, &data.endian);
-	// Define qual função será chamada quando fechar a janela for chamado
+	data.win = mlx_new_window(data.mlx, data.width, data.height, "so_long");
+	draw_map(&data, map, &texture);
 	mlx_hook(data.win, 17, 0, close_window, &data);
 	// Define qual função será chamada quando uma tecla for pressionada
 	mlx_hook(data.win, 2, 1L << 0, key_press, &data);

@@ -12,21 +12,23 @@
 
 #include "so_long.h"
 
-int	init_map(char *file, t_map *map, char ***line, int *n_lines, int *fd, int *len)
+int	init_map(char *file, t_map *map, char ***line, int *fd)
 {
-	*n_lines = count_lines(file);
+	int		n_lines;
+
+	n_lines = count_lines(file);
 	*fd = open(file, O_RDONLY);
 	if (*fd < 0)
 		return (1);
-	map->map = ft_calloc(*n_lines + 1, sizeof(char *));
-	*line = ft_calloc(*n_lines + 1, sizeof(char *));
+	map->map = ft_calloc(n_lines + 1, sizeof(char *));
+	*line = ft_calloc(n_lines + 1, sizeof(char *));
 	(*line)[0] = get_next_line(*fd);
 	if (!*line || !map->map)
 	{
 		handle_error(*fd, *line, map);
 		return (1);
 	}
-	*len = ft_strlen(*line[0]);
+	map->cols = n_lines;
 	return (0);
 }
 
@@ -39,5 +41,6 @@ void	handle_error(int fd, char **line, t_map *map)
 		free_array(map->map);
 		map->map = NULL;
 	}
-	free_array(line);
+	if (line)
+		free_array(line);
 }

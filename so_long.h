@@ -20,9 +20,6 @@
 # include <stdint.h>
 # include <stdio.h>
 
-# define WIDTH 800
-# define HEIGHT 800
-
 typedef struct s_data
 {
 	void	*mlx;
@@ -32,6 +29,8 @@ typedef struct s_data
 	int		bpp;
 	int		size;
 	int		endian;
+	int		width;
+	int		height;
 }	t_data;
 
 typedef struct s_map
@@ -50,8 +49,16 @@ typedef struct s_map
 	int		**exits_pos;
 }	t_map;
 
+typedef struct s_texture
+{
+	void	*walls;
+	void	*floor;
+	void	*collectible;
+	void	*exit;
+	void	*player;
+}	t_texture;
+
 // main.c
-void	color_screen(t_data *data, int color);
 int		key_press(int keycode, void *param);
 int		close_window(t_data *data);
 void	free_array(char **array);
@@ -61,11 +68,11 @@ void	free_map(t_map *map);
 int		check_extension(char *file);
 int		count_lines(char *file);
 int		check_wall(char *line);
-int	check_map_content(char *line, size_t len, int n_line, t_map *map);
+int		check_map_content(char *line, size_t len, int n_line, t_map *map);
 int		check_map(char *file, t_map *map);
 
 // map_utils.c
-int	init_map(char *file, t_map *map, char ***line, int *n_lines, int *fd, int *len);
+int		init_map(char *file, t_map *map, char ***line, int *fd);
 void	handle_error(int fd, char **line, t_map *map);
 
 // create_map.c
@@ -74,5 +81,16 @@ void	add_collectible(int row, int col, t_map *map);
 void	add_exit(int row, int col, t_map *map);
 void	add_player(int row, int col, t_map *map);
 void	add_floor(int row, int col, t_map *map);
+
+// define_textures.c
+void	define_textures(t_texture *texture, t_data *data);
+
+// draw_map.c
+void	draw_map(t_data *data, t_map *map, t_texture *texture);
+void	put_textures(t_data *data, t_map *map, t_texture *texture);
+void	put_player(t_data *data, t_map *map, t_texture *texture);
+void	put_collectibles(t_data *data, t_map *map, t_texture *texture);
+void	put_exit(t_data *data, t_map *map, t_texture *texture);
+
 
 #endif

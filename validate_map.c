@@ -31,7 +31,7 @@ int	count_lines(char *file)
 
 	fd = open(file, O_RDONLY);
 	if (fd < 0)
-		return (0);
+		return (-1);
 	n_lines = 0;
 	bytes_read = read(fd, &buffer, 1);
 	while (bytes_read > 0)
@@ -91,21 +91,20 @@ int	check_map(char *file, t_map *map)
 {
 	char	**line;
 	int		i;
-	int		n_lines;
 	int		fd;
-	int	len;
 
 	i = 0;
-	if (init_map(file, map, &line, &n_lines, &fd, &len) || check_wall(line[0]))
+
+	if (init_map(file, map, &line, &fd) || check_wall(line[0]))
 	{
 		handle_error(fd, line, map);
 		return (1);
 	}
 	while (line[i])
 	{
-		map->map[i] = ft_calloc(len + 1, sizeof(char));
+		map->map[i] = ft_calloc(ft_strlen(line[0]) + 1, sizeof(char));
 		if (!map->map[i]
-			|| check_map_content(line[i], len, i, map))
+			|| check_map_content(line[i], ft_strlen(line[0]), i, map))
 		{
 			handle_error(fd, line, map);
 			return (1);
@@ -113,12 +112,12 @@ int	check_map(char *file, t_map *map)
 		i++;
 		line[i] = get_next_line(fd);
 	}
-	if (check_wall(line[i - 1]))
+	if (check_wall(line[i - 1]) || map->player_x < 1 || map->exits < 1)
 	{
 		handle_error(fd, line, map);
 		return (1);
 	}
-	free_array(line);
 	close(fd);
+	map->rows = ft_strlen(line[0]) - 1;
 	return (0);
 }
