@@ -58,22 +58,22 @@ int	check_wall(char *line)
 	return (0);
 }
 
-int	check_map_content(char *line, size_t len, int n_line, t_map *map)
+int	check_map_content(char *line, t_map *map, int n_line)
 {
 	int	i;
 
 	i = 0;
+	if (line[0] != '1')
+		return (1);
 	while (line[i] && line[i] != '\n')
 	{
-		if (ft_strlen(line) != len || line[0] != '1')
-			return (1);
 		if (line[i] == '1')
 			add_wall(n_line, i, map);
 		else if (line[i] == 'P' && map->player_x < 1)
 			add_player(n_line, i, map);
 		else if (line[i] == 'C')
 			add_collectible(n_line, i, map);
-		else if (line[i] == 'E' && map->exits < 1)
+		else if (line[i] == 'E' && map->exit < 1)
 			add_exit(n_line, i, map);
 		else if (line[i] == '0')
 			add_floor(n_line, i, map);
@@ -83,41 +83,36 @@ int	check_map_content(char *line, size_t len, int n_line, t_map *map)
 	}
 	if (line[i - 1] != '1')
 		return (1);
-	ft_printf("\n");
 	return (0);
 }
 
-int	check_map(char *file, t_map *map)
+int	check_map(char *file, t_data *data)
 {
 	char	**line;
 	int		i;
-	int		fd;
 
-	i = 0;
-
-	if (init_map(file, map, &line, &fd) || check_wall(line[0]))
+	line = init_line(&file, data->map);
+	if (!line || init_map(file, data->map)
+		|| check_wall(line[0]) || check_wall(line[data->map->rows - 1]))
 	{
-		handle_error(fd, line, map);
+		free_array(line);
 		return (1);
 	}
+	i = 0;
 	while (line[i])
 	{
-		map->map[i] = ft_calloc(ft_strlen(line[0]) + 1, sizeof(char));
-		if (!map->map[i]
-			|| check_map_content(line[i], ft_strlen(line[0]), i, map))
+		if (check_map_content(line[i], data->map, i))
 		{
-			handle_error(fd, line, map);
+			free_array(line);
 			return (1);
 		}
 		i++;
-		line[i] = get_next_line(fd);
 	}
-	if (check_wall(line[i - 1]) || map->player_x < 1 || map->exits < 1)
+	if (data->map->player_x < 1 || data->map->exit < 1 || data->map->collectibles < 1)
 	{
-		handle_error(fd, line, map);
+		free_array(line);
 		return (1);
 	}
-	close(fd);
-	map->rows = ft_strlen(line[0]) - 1;
+	free_array(line);
 	return (0);
 }
