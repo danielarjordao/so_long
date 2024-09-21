@@ -14,7 +14,7 @@
 
 void	init_data(t_data *data)
 {
-	data->texture = ft_calloc(1, sizeof(t_texture));
+	data->textures = ft_calloc(1, sizeof(t_textures));
 	data->map = ft_calloc(1, sizeof(t_map));
 }
 
@@ -23,11 +23,15 @@ char	**init_line(char **file, t_map *map)
 	int		fd;
 	int		i;
 	char	**line;
+	int		n_lines;
 
 	fd = open(*file, O_RDONLY);
 	if (fd < 0)
 		return (NULL);
-	line = ft_calloc(count_lines(*file) + 1, sizeof(char *));
+	n_lines = count_lines(*file);
+	if (n_lines <= 0)
+		return (NULL);
+	line = ft_calloc(n_lines + 1, sizeof(char *));
 	i = 0;
 	line[i] = get_next_line(fd);
 	while (line[i])
@@ -95,20 +99,22 @@ void handle_error(t_data *data)
 			free_array(data->map->map);
 		free(data->map);
 	}
+	if (data->textures)
+		free(data->textures);
 	free(data);
 }
 
 void destroy_textures(t_data *data)
 {
-	if (data->texture->walls)
-		mlx_destroy_image(data->mlx, data->texture->walls);
-	if (data->texture->floor)
-		mlx_destroy_image(data->mlx, data->texture->floor);
-	if (data->texture->player)
-		mlx_destroy_image(data->mlx, data->texture->player);
-	if (data->texture->collectible)
-		mlx_destroy_image(data->mlx, data->texture->collectible);
-	if (data->texture->exit)
-		mlx_destroy_image(data->mlx, data->texture->exit);
-	free(data->texture);
+	if (data->textures->walls)
+		mlx_destroy_image(data->mlx, data->textures->walls);
+	if (data->textures->floor)
+		mlx_destroy_image(data->mlx, data->textures->floor);
+	if (data->textures->player)
+		mlx_destroy_image(data->mlx, data->textures->player);
+	if (data->textures->collectible)
+		mlx_destroy_image(data->mlx, data->textures->collectible);
+	if (data->textures->exit)
+		mlx_destroy_image(data->mlx, data->textures->exit);
+	free(data->textures);
 }

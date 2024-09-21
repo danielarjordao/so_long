@@ -38,7 +38,8 @@ int	main(int argc, char **argv)
 	if (argc != 2 || check_extension(argv[1]) || (check_map(argv[1], data)))
 	{
 		write(2, "Error\n", 6);
-		handle_error(data);
+		if (data)
+			handle_error(data);
 		return (1);
 	}
 	data->mlx = mlx_init();

@@ -33,14 +33,19 @@ typedef struct s_map
 	int		moves;
 }	t_map;
 
-typedef struct s_texture
+typedef struct s_textures
 {
 	void	*walls;
+	char	*data_walls;
 	void	*floor;
+	char	*data_floor;
 	void	*player;
+	char	*data_player;
 	void	*collectible;
+	char	*data_collectible;
 	void	*exit;
-}	t_texture;
+	char	*data_exit;
+}	t_textures;
 
 typedef struct s_data
 {
@@ -48,7 +53,7 @@ typedef struct s_data
 	void	*win;
 	int		width;
 	int		height;
-	t_texture	*texture;
+	t_textures	*textures;
 	t_map	*map;
 }	t_data;
 
@@ -68,6 +73,7 @@ int		init_map(char *file, t_map *map);
 char	**init_line(char **file, t_map *map);
 void	free_array(char **array);
 void	handle_error(t_data *data);
+void	destroy_textures(t_data *data);
 
 // save_map.c
 void	add_wall(int row, int col, t_map *map);
@@ -82,8 +88,8 @@ void	define_textures(t_data *data);
 // draw_map.c
 void	draw_map(t_data *data);
 void	put_textures(t_data *data, t_map *map);
-void	put_player(t_data *data, t_map *map, t_texture *texture);
-void	put_collectibles(t_data *data, t_map *map, t_texture *texture);
+void	put_player(t_data *data, t_map *map, t_textures *textures);
+void	put_collectibles(t_data *data, t_map *map, t_textures *textures);
 
 // move_player.c
 int		key_press(int keycode, t_data *data);

@@ -16,8 +16,8 @@ void	draw_map(t_data *data)
 {
 	define_textures(data);
 	put_textures(data, data->map);
-	put_player(data, data->map, data->texture);
-	put_collectibles(data, data->map, data->texture);
+	put_player(data, data->map, data->textures);
+	put_collectibles(data, data->map, data->textures);
 }
 
 void	put_textures(t_data *data, t_map *map)
@@ -34,18 +34,18 @@ void	put_textures(t_data *data, t_map *map)
 			if (map->map[y][x] == '1')
 			{
 				mlx_put_image_to_window(data->mlx, data->win,
-					data->texture->walls, x * 32, y * 32);
+					data->textures->walls , x * 32, y * 32);
 			}
 			else if (data->map->map[y][x] == 'E')
 			{
 				mlx_put_image_to_window(data->mlx, data->win,
-				data->texture->exit, x * 32, y * 32);
+				data->textures->exit, x * 32, y * 32);
 				data->map->exit++;
 			}
 			else
 			{
 				mlx_put_image_to_window(data->mlx, data->win,
-					data->texture->floor, x * 32, y * 32);
+					data->textures->floor, x * 32, y * 32);
 			}
 			x++;
 		}
@@ -54,13 +54,13 @@ void	put_textures(t_data *data, t_map *map)
 	}
 }
 
-void	put_player(t_data *data, t_map *map, t_texture *texture)
+void	put_player(t_data *data, t_map *map, t_textures *textures)
 {
 	mlx_put_image_to_window(data->mlx, data->win,
-		texture->player, map->player_x * 32, map->player_y * 32);
+		textures->player, map->player_x * 32, map->player_y * 32);
 }
 
-void	put_collectibles(t_data *data, t_map *map, t_texture *texture)
+void	put_collectibles(t_data *data, t_map *map, t_textures *textures)
 {
 	int	x;
 	int	y;
@@ -74,7 +74,7 @@ void	put_collectibles(t_data *data, t_map *map, t_texture *texture)
 			if (map->map[y][x] == 'C')
 			{
 				mlx_put_image_to_window(data->mlx, data->win,
-					texture->collectible, x * 32, y * 32);
+					textures->collectible, x * 32, y * 32);
 			}
 			x++;
 		}

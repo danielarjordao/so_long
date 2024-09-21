@@ -28,18 +28,27 @@ int	count_lines(char *file)
 	char	buffer;
 	int		bytes_read;
 	int		fd;
+	int		new_line;
 
 	fd = open(file, O_RDONLY);
 	if (fd < 0)
 		return (-1);
 	n_lines = 0;
+	new_line = 1;
 	bytes_read = read(fd, &buffer, 1);
 	while (bytes_read > 0)
 	{
 		if (buffer == '\n')
+		{
 			n_lines++;
+			new_line = 1;
+		}
+		else
+			new_line = 0;
 		bytes_read = read(fd, &buffer, 1);
 	}
+	if (!new_line)
+		n_lines++;
 	close(fd);
 	return (n_lines);
 }
