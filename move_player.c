@@ -50,6 +50,7 @@ void	walk(t_data *data, int next_y, int next_x)
 	}
 	data->map->player_y = next_y;
 	data->map->player_x = next_x;
-	draw_map(data);
+	put_textures(data, data->map);
+	put_collectibles(data, data->map, data->textures);
 	put_player(data, data->map, data->textures);
 }

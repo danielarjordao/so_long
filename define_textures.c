@@ -15,16 +15,16 @@
 void	define_textures(t_data *data)
 {
 	int		i;
+	int		j;
 
-	i = 32;
 	data->textures->walls = mlx_xpm_file_to_image(data->mlx, "./textures/wall.xpm",
-			&i, &i);
+			&i, &j);
 	data->textures->floor = mlx_xpm_file_to_image(data->mlx, "./textures/floor.xpm",
-			&i, &i);
+			&i, &j);
 	data->textures->player = mlx_xpm_file_to_image(data->mlx, "./textures/player.xpm",
-			&i, &i);
+			&i, &j);
 	data->textures->collectible = mlx_xpm_file_to_image(data->mlx, "./textures/collectible.xpm",
-			&i, &i);
+			&i, &j);
 	data->textures->exit = mlx_xpm_file_to_image(data->mlx, "./textures/exit.xpm",
-			&i, &i);
+			&i, &j);
 }

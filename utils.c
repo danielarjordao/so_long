@@ -99,8 +99,6 @@ void handle_error(t_data *data)
 			free_array(data->map->map);
 		free(data->map);
 	}
-	if (data->textures)
-		free(data->textures);
 	free(data);
 }
 
