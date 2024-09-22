@@ -90,6 +90,8 @@ int	check_map_content(char *line, t_map *map, int n_line)
 			return (1);
 		i++;
 	}
+	ft_printf("i: %d\n", i);
+	ft_printf("line[i - 1]: %c\n", line[i - 1]);
 	if (line[i - 1] != '1')
 		return (1);
 	return (0);

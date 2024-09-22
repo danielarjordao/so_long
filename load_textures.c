@@ -12,7 +12,7 @@
 
 #include "so_long.h"
 
-void	define_textures(t_data *data)
+void	load_textures(t_data *data)
 {
 	int		i;
 	int		j;

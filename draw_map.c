@@ -14,10 +14,8 @@
 
 void	draw_map(t_data *data)
 {
-	define_textures(data);
 	put_textures(data, data->map);
 	put_player(data, data->map, data->textures);
-	put_collectibles(data, data->map, data->textures);
 }
 
 void	put_textures(t_data *data, t_map *map)
@@ -41,6 +39,11 @@ void	put_textures(t_data *data, t_map *map)
 				mlx_put_image_to_window(data->mlx, data->win,
 				data->textures->exit, x * 32, y * 32);
 				data->map->exit++;
+			}
+			else if (data->map->map[y][x] == 'C')
+			{
+				mlx_put_image_to_window(data->mlx, data->win,
+					data->textures->collectible, x * 32, y * 32);
 			}
 			else
 			{

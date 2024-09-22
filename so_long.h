@@ -36,15 +36,10 @@ typedef struct s_map
 typedef struct s_textures
 {
 	void	*walls;
-	char	*data_walls;
 	void	*floor;
-	char	*data_floor;
 	void	*player;
-	char	*data_player;
 	void	*collectible;
-	char	*data_collectible;
 	void	*exit;
-	char	*data_exit;
 }	t_textures;
 
 typedef struct s_data
@@ -83,7 +78,7 @@ void	add_player(int row, int col, t_map *map);
 void	add_floor(int row, int col, t_map *map);
 
 // define_textures.c
-void	define_textures(t_data *data);
+void	load_textures(t_data *data);
 
 // draw_map.c
 void	draw_map(t_data *data);

@@ -17,7 +17,7 @@ LIBMLX = -I./minilibx-linux -L./minilibx-linux -lmlx -lX11 -lXext -lm -lbsd
 CC = cc
 CFLAGS = -Wall -Wextra -Werror
 SRCS = ./get_next_line/get_next_line.c ./get_next_line/get_next_line_utils.c \
-		main.c validate_map.c save_map.c utils.c define_textures.c \
+		main.c validate_map.c save_map.c utils.c load_textures.c \
 		draw_map.c move_player.c
 OBJS = $(SRCS:.c=.o)
 RM = rm -rf

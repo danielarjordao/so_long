@@ -99,6 +99,8 @@ void handle_error(t_data *data)
 			free_array(data->map->map);
 		free(data->map);
 	}
+	if (data->textures)
+		free(data->textures);
 	free(data);
 }
 
@@ -114,5 +116,4 @@ void destroy_textures(t_data *data)
 		mlx_destroy_image(data->mlx, data->textures->collectible);
 	if (data->textures->exit)
 		mlx_destroy_image(data->mlx, data->textures->exit);
-	free(data->textures);
 }

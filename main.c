@@ -38,7 +38,7 @@ int	main(int argc, char **argv)
 	init_data(data);
 	if (argc != 2 || check_extension(argv[1]) || (check_map(argv[1], data)))
 	{
-		write(2, "Error\n", 6);
+		ft_printf("\"Error\"\n");;
 		if (data)
 			handle_error(data);
 		return (1);
@@ -47,6 +47,7 @@ int	main(int argc, char **argv)
 	data->height = data->map->rows * 32;
 	data->width = data->map->cols * 32;
 	data->win = mlx_new_window(data->mlx, data->width, data->height, "so_long");
+	load_textures(data);
 	draw_map(data);
 	play_game(data);
 	return (0);
