@@ -36,6 +36,11 @@ char	**init_line(char **file, t_map *map)
 	line[i] = get_next_line(fd);
 	while (line[i])
 	{
+		if (ft_strlen(line[0]) != ft_strlen(line[i]))
+		{
+			free_array(line);
+			return (NULL);
+		}
 		i++;
 		line[i] = get_next_line(fd);
 	}

@@ -61,6 +61,9 @@ int		count_lines(char *file);
 int		check_wall(char *line);
 int		check_map_content(char *line, t_map *map, int n_line);
 int		check_map(char *file, t_data *data);
+char	**copy_map(char **map, int rows);
+int	check_reachable(t_data *data);
+int	is_acessible(t_data *data, char **temp_map, int x, int y);
 
 // utils.c
 void	init_data(t_data *data);

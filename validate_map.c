@@ -90,8 +90,6 @@ int	check_map_content(char *line, t_map *map, int n_line)
 			return (1);
 		i++;
 	}
-	ft_printf("i: %d\n", i);
-	ft_printf("line[i - 1]: %c\n", line[i - 1]);
 	if (line[i - 1] != '1')
 		return (1);
 	return (0);
@@ -124,6 +122,84 @@ int	check_map(char *file, t_data *data)
 		free_array(line);
 		return (1);
 	}
+	if (check_reachable(data))
+	{
+		free_array(line);
+		return (1);
+	}
 	free_array(line);
+	return (0);
+}
+
+char	**copy_map(char **map, int rows)
+{
+	char	**temp_map;
+	int		i;
+
+	temp_map = (char **)malloc(sizeof(char *) * (rows + 1));
+	if (!temp_map)
+		return (NULL);
+	i = 0;
+	while (i < rows)
+	{
+		temp_map[i] = ft_strdup(map[i]);
+		if (!temp_map[i])
+		{
+			while (i >= 0)
+			{
+				free(temp_map[i]);
+				i--;
+			}
+			return (NULL);
+		}
+		i++;
+	}
+	temp_map[i] = NULL;
+	return (temp_map);
+}
+
+int	check_reachable(t_data *data)
+{
+	int	x;
+	int	y;
+	char	**temp_map;
+
+	y = 0;
+	temp_map = copy_map(data->map->map, data->map->rows);
+	if (!temp_map)
+		return (1);
+	while (temp_map[y])
+	{
+		x = 0;
+		while (temp_map[y][x])
+		{
+			if (temp_map[y][x] == 'E' || temp_map[y][x] == 'C')
+			{
+				if (!is_acessible(data, temp_map, x, y))
+				{
+					free_array(temp_map);
+					return (1);
+				}
+			}
+			x++;
+		}
+		y++;
+	}
+	free_array(temp_map);
+	return (0);
+}
+
+int	is_acessible(t_data *data, char **temp_map, int x, int y)
+{
+	if (x < 0 || y < 0 || x >= data->map->cols || y >= data->map->rows)
+		return (0);
+	if (temp_map[y][x] == '1')
+		return (0);
+	if (temp_map[y][x] == 'P')
+		return (1);
+	temp_map[y][x] = '1';
+	if (is_acessible(data, temp_map, x + 1, y) || is_acessible(data, temp_map, x - 1, y)
+		|| is_acessible(data, temp_map, x, y + 1) || is_acessible(data, temp_map, x, y - 1))
+		return (1);
 	return (0);
 }
