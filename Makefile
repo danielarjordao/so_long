@@ -18,7 +18,7 @@ CC = cc
 CFLAGS = -Wall -Wextra -Werror
 SRCS = ./get_next_line/get_next_line.c ./get_next_line/get_next_line_utils.c \
 		main.c init.c checkers.c clean.c validate_map.c \
-		save_map.c utils.c load_textures.c draw_map.c move_player.c
+		save_map.c utils.c draw_map.c play_game.c
 OBJS = $(SRCS:.c=.o)
 RM = rm -rf
 

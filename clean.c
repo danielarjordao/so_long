@@ -10,9 +10,9 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-# include "so_long.h"
+#include "so_long.h"
 
-void free_array(char **array)
+void	free_array(char **array)
 {
 	int	i;
 
@@ -32,7 +32,7 @@ void free_array(char **array)
 	}
 }
 
-void destroy_textures(t_data *data)
+void	destroy_textures(t_data *data)
 {
 	if (data->textures->walls)
 		mlx_destroy_image(data->mlx, data->textures->walls);
@@ -46,11 +46,11 @@ void destroy_textures(t_data *data)
 		mlx_destroy_image(data->mlx, data->textures->exit);
 }
 
-void handle_close(t_data *data)
+void	handle_close(t_data *data)
 {
 	get_next_line(-1);
 	if (!data)
-		return;
+		return ;
 	if (data->map)
 	{
 		if (data->map->map)

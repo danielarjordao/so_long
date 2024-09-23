@@ -12,14 +12,19 @@
 
 #include "so_long.h"
 
+void	play_game(t_data *data)
+{
+	mlx_hook(data->win, 2, 1L << 0, key_press, data);
+	mlx_hook(data->win, 17, 1L << 17, close_window, data);
+	mlx_loop(data->mlx);
+}
+
 int	key_press(int keycode, t_data *data)
 {
 	if (keycode == 65307)
 		close_window(data);
-	// `w` or `up arrow`
 	if (keycode == 119 || keycode == 65362)
 		walk(data, data->map->player_y - 1, data->map->player_x);
-	// `a` or `left arrow`
 	if (keycode == 97 || keycode == 65361)
 		walk(data, data->map->player_y, data->map->player_x - 1);
 	if (keycode == 115 || keycode == 65364)
@@ -50,6 +55,6 @@ void	walk(t_data *data, int next_y, int next_x)
 	}
 	data->map->player_y = next_y;
 	data->map->player_x = next_x;
-	put_textures(data, data->map);
-	put_player(data, data->map, data->textures);
+	put_textures(data);
+	put_player(data);
 }

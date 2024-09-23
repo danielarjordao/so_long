@@ -12,13 +12,6 @@
 
 #include "so_long.h"
 
-void	play_game(t_data *data)
-{
-	mlx_hook(data->win, 2, 1L << 0, key_press, data);
-	mlx_hook(data->win, 17, 1L << 17, close_window, data);
-	mlx_loop(data->mlx);
-}
-
 int	main(int argc, char **argv)
 {
 	t_data	*data;
@@ -27,7 +20,8 @@ int	main(int argc, char **argv)
 	init_data(data);
 	if (argc != 2 || check_extension(argv[1]) || (validate_map(argv[1], data)))
 	{
-		ft_printf("\"Error\"\n");;
+		write(1, "\"Error\"\n", 8);
+		ft_printf("The map is invalid.\n");
 		if (data)
 			handle_close(data);
 		return (1);

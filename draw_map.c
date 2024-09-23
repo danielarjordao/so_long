@@ -10,55 +10,72 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-# include "so_long.h"
+#include "so_long.h"
+
+void	load_textures(t_data *data)
+{
+	int		i;
+	int		j;
+
+	data->textures->walls = mlx_xpm_file_to_image(data->mlx,
+			"./textures/wall.xpm", &i, &j);
+	data->textures->floor = mlx_xpm_file_to_image(data->mlx,
+			"./textures/floor.xpm", &i, &j);
+	data->textures->player = mlx_xpm_file_to_image(data->mlx,
+			"./textures/player.xpm", &i, &j);
+	data->textures->collectible = mlx_xpm_file_to_image(data->mlx,
+			"./textures/collectible.xpm", &i, &j);
+	data->textures->exit = mlx_xpm_file_to_image(data->mlx,
+			"./textures/exit.xpm", &i, &j);
+}
 
 void	draw_map(t_data *data)
 {
-	put_textures(data, data->map);
-	put_player(data, data->map, data->textures);
+	put_textures(data);
+	put_player(data);
 }
 
-void	put_textures(t_data *data, t_map *map)
+void	put_textures(t_data *data)
 {
 	int	x;
 	int	y;
 
 	y = 0;
-	x = 0;
 	while (y < data->map->rows)
 	{
+		x = 0;
 		while (x < data->map->cols)
 		{
-			if (map->map[y][x] == '1')
+			if (data->map->map[y][x] == 'E')
 			{
 				mlx_put_image_to_window(data->mlx, data->win,
-					data->textures->walls , x * 32, y * 32);
-			}
-			else if (data->map->map[y][x] == 'E')
-			{
-				mlx_put_image_to_window(data->mlx, data->win,
-				data->textures->exit, x * 32, y * 32);
+					data->textures->exit, x * 32, y * 32);
 				data->map->exit++;
 			}
-			else if (data->map->map[y][x] == 'C')
-			{
-				mlx_put_image_to_window(data->mlx, data->win,
-					data->textures->collectible, x * 32, y * 32);
-			}
 			else
-			{
-				mlx_put_image_to_window(data->mlx, data->win,
-					data->textures->floor, x * 32, y * 32);
-			}
+				put_image(data, data->map->map[y][x], x, y);
 			x++;
 		}
 		y++;
-		x = 0;
 	}
 }
 
-void	put_player(t_data *data, t_map *map, t_textures *textures)
+void	put_player(t_data *data)
 {
 	mlx_put_image_to_window(data->mlx, data->win,
-		textures->player, map->player_x * 32, map->player_y * 32);
+		data->textures->player, data->map->player_x * 32,
+		data->map->player_y * 32);
+}
+
+void	put_image(t_data *data, char c, int x, int y)
+{
+	if (c == '1')
+		mlx_put_image_to_window(data->mlx, data->win,
+			data->textures->walls, x * 32, y * 32);
+	else if (c == 'C')
+		mlx_put_image_to_window(data->mlx, data->win,
+			data->textures->collectible, x * 32, y * 32);
+	else
+		mlx_put_image_to_window(data->mlx, data->win,
+			data->textures->floor, x * 32, y * 32);
 }

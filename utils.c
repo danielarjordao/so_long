@@ -24,6 +24,8 @@ int	count_lines(char *file)
 		return (0);
 	n_lines = 0;
 	bytes_read = read(fd, &buffer, 1);
+	if (bytes_read <= 0)
+		return (0);
 	while (bytes_read > 0)
 	{
 		if (buffer == '\n')
@@ -61,4 +63,21 @@ char	**copy_map(char **map, int rows)
 	}
 	temp_map[i] = NULL;
 	return (temp_map);
+}
+
+int	is_acessible(t_data *data, char **temp_map, int x, int y)
+{
+	if (x < 0 || y < 0 || x >= data->map->cols || y >= data->map->rows)
+		return (0);
+	if (temp_map[y][x] == '1')
+		return (0);
+	if (temp_map[y][x] == 'P')
+		return (1);
+	temp_map[y][x] = '1';
+	if (is_acessible(data, temp_map, x + 1, y)
+		|| is_acessible(data, temp_map, x - 1, y)
+		|| is_acessible(data, temp_map, x, y + 1)
+		|| is_acessible(data, temp_map, x, y - 1))
+		return (1);
+	return (0);
 }

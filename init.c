@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-# include "so_long.h"
+#include "so_long.h"
 
 void	init_data(t_data *data)
 {
@@ -26,10 +26,8 @@ char	**init_line(char **file, t_map *map)
 	int		n_lines;
 
 	fd = open(*file, O_RDONLY);
-	if (fd < 0)
-		return (NULL);
 	n_lines = count_lines(*file);
-	if (n_lines <= 0)
+	if (fd < 0 || n_lines <= 0)
 		return (NULL);
 	line = ft_calloc(n_lines + 1, sizeof(char *));
 	i = 0;
@@ -37,10 +35,7 @@ char	**init_line(char **file, t_map *map)
 	while (line[i])
 	{
 		if (ft_strlen(line[0]) != ft_strlen(line[i]))
-		{
-			free_array(line);
-			return (NULL);
-		}
+			return (free_array(line), NULL);
 		i++;
 		line[i] = get_next_line(fd);
 	}

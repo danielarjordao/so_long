@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-# include "so_long.h"
+#include "so_long.h"
 
 int	check_extension(char *file)
 {
@@ -66,14 +66,22 @@ int	check_map_content(char *line, t_map *map, int n_line)
 
 int	check_reachable(t_data *data)
 {
-	int	x;
-	int	y;
+	int		x;
+	int		y;
 	char	**temp_map;
 
 	y = 0;
+	x = 0;
 	temp_map = copy_map(data->map->map, data->map->rows);
 	if (!temp_map)
 		return (1);
+	if (check_reachable_aux(data, temp_map, x, y))
+		return (1);
+	return (0);
+}
+
+int	check_reachable_aux(t_data *data, char **temp_map, int x, int y)
+{
 	while (temp_map[y])
 	{
 		x = 0;
@@ -82,35 +90,14 @@ int	check_reachable(t_data *data)
 			if (temp_map[y][x] == 'E' || temp_map[y][x] == 'C')
 			{
 				if (!is_acessible(data, temp_map, x, y))
-				{
-					free_array(temp_map);
-					return (1);
-				}
-				else
-				{
-					free_array(temp_map);
-					temp_map = copy_map(data->map->map, data->map->rows);
-				}
+					return (free_array(temp_map), 1);
+				free_array(temp_map);
+				temp_map = copy_map(data->map->map, data->map->rows);
 			}
 			x++;
 		}
 		y++;
 	}
 	free_array(temp_map);
-	return (0);
-}
-
-int	is_acessible(t_data *data, char **temp_map, int x, int y)
-{
-	if (x < 0 || y < 0 || x >= data->map->cols || y >= data->map->rows)
-		return (0);
-	if (temp_map[y][x] == '1')
-		return (0);
-	if (temp_map[y][x] == 'P')
-		return (1);
-	temp_map[y][x] = '1';
-	if (is_acessible(data, temp_map, x + 1, y) || is_acessible(data, temp_map, x - 1, y)
-		|| is_acessible(data, temp_map, x, y + 1) || is_acessible(data, temp_map, x, y - 1))
-		return (1);
 	return (0);
 }

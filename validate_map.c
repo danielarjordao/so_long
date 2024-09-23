@@ -20,26 +20,17 @@ int	validate_map(char *file, t_data *data)
 	line = init_line(&file, data->map);
 	if (!line || init_map(file, data->map)
 		|| check_wall(line[0]) || check_wall(line[data->map->rows - 1]))
-	{
-		free_array(line);
-		return (1);
-	}
+		return (free_array(line), 1);
 	i = 0;
 	while (line[i])
 	{
 		if (check_map_content(line[i], data->map, i))
-		{
-			free_array(line);
-			return (1);
-		}
+			return (free_array(line), 1);
 		i++;
 	}
 	if (data->map->player_x < 1 || data->map->exit < 1
 		|| data->map->collectibles < 1 || check_reachable(data))
-	{
-		free_array(line);
-		return (1);
-	}
+		return (free_array(line), 1);
 	free_array(line);
 	return (0);
 }
