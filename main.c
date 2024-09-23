@@ -12,17 +12,6 @@
 
 #include "so_long.h"
 
-// Função que fecha a janela
-int	close_window(t_data *data)
-{
-	destroy_textures(data);
-	mlx_destroy_window(data->mlx, data->win);
-	mlx_destroy_display(data->mlx);
-	free(data->mlx);
-	handle_error(data);
-	exit(0);
-}
-
 void	play_game(t_data *data)
 {
 	mlx_hook(data->win, 2, 1L << 0, key_press, data);
@@ -36,11 +25,11 @@ int	main(int argc, char **argv)
 
 	data = ft_calloc(1, sizeof(t_data));
 	init_data(data);
-	if (argc != 2 || check_extension(argv[1]) || (check_map(argv[1], data)))
+	if (argc != 2 || check_extension(argv[1]) || (validate_map(argv[1], data)))
 	{
 		ft_printf("\"Error\"\n");;
 		if (data)
-			handle_error(data);
+			handle_close(data);
 		return (1);
 	}
 	data->mlx = mlx_init();

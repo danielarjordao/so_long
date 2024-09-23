@@ -52,26 +52,30 @@ typedef struct s_data
 	t_map	*map;
 }	t_data;
 
-// main.c
+// init.c
+void	init_data(t_data *data);
+int		init_map(char *file, t_map *map);
+char	**init_line(char **file, t_map *map);
+
+// clean.c
+void	free_array(char **array);
+void	destroy_textures(t_data *data);
+void	handle_close(t_data *data);
 int		close_window(t_data *data);
 
 // validate_map.c
-int		check_extension(char *file);
-int		count_lines(char *file);
+int		validate_map(char *file, t_data *data);
+
+// checkers.c
+int	check_extension(char *file);
 int		check_wall(char *line);
 int		check_map_content(char *line, t_map *map, int n_line);
-int		check_map(char *file, t_data *data);
-char	**copy_map(char **map, int rows);
 int	check_reachable(t_data *data);
 int	is_acessible(t_data *data, char **temp_map, int x, int y);
 
 // utils.c
-void	init_data(t_data *data);
-int		init_map(char *file, t_map *map);
-char	**init_line(char **file, t_map *map);
-void	free_array(char **array);
-void	handle_error(t_data *data);
-void	destroy_textures(t_data *data);
+int		count_lines(char *file);
+char	**copy_map(char **map, int rows);
 
 // save_map.c
 void	add_wall(int row, int col, t_map *map);
@@ -80,14 +84,13 @@ void	add_exit(int row, int col, t_map *map);
 void	add_player(int row, int col, t_map *map);
 void	add_floor(int row, int col, t_map *map);
 
-// define_textures.c
+// load_textures.c
 void	load_textures(t_data *data);
 
 // draw_map.c
 void	draw_map(t_data *data);
 void	put_textures(t_data *data, t_map *map);
 void	put_player(t_data *data, t_map *map, t_textures *textures);
-void	put_collectibles(t_data *data, t_map *map, t_textures *textures);
 
 // move_player.c
 int		key_press(int keycode, t_data *data);

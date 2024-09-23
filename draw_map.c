@@ -62,26 +62,3 @@ void	put_player(t_data *data, t_map *map, t_textures *textures)
 	mlx_put_image_to_window(data->mlx, data->win,
 		textures->player, map->player_x * 32, map->player_y * 32);
 }
-
-void	put_collectibles(t_data *data, t_map *map, t_textures *textures)
-{
-	int	x;
-	int	y;
-
-	x = 0;
-	y = 0;
-	while (y < data->map->rows)
-	{
-		while (x < data->map->cols)
-		{
-			if (map->map[y][x] == 'C')
-			{
-				mlx_put_image_to_window(data->mlx, data->win,
-					textures->collectible, x * 32, y * 32);
-			}
-			x++;
-		}
-		x = 0;
-		y++;
-	}
-}

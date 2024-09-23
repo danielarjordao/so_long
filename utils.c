@@ -12,113 +12,53 @@
 
 #include "so_long.h"
 
-void	init_data(t_data *data)
+int	count_lines(char *file)
 {
-	data->textures = ft_calloc(1, sizeof(t_textures));
-	data->map = ft_calloc(1, sizeof(t_map));
+	int		n_lines;
+	char	buffer;
+	int		fd;
+	int		bytes_read;
+
+	fd = open(file, O_RDONLY);
+	if (fd < 0)
+		return (0);
+	n_lines = 0;
+	bytes_read = read(fd, &buffer, 1);
+	while (bytes_read > 0)
+	{
+		if (buffer == '\n')
+			n_lines++;
+		bytes_read = read(fd, &buffer, 1);
+	}
+	if (bytes_read == 0 && buffer != '\n')
+		n_lines++;
+	close(fd);
+	return (n_lines);
 }
 
-char	**init_line(char **file, t_map *map)
+char	**copy_map(char **map, int rows)
 {
-	int		fd;
+	char	**temp_map;
 	int		i;
-	char	**line;
-	int		n_lines;
 
-	fd = open(*file, O_RDONLY);
-	if (fd < 0)
+	temp_map = (char **)malloc(sizeof(char *) * (rows + 1));
+	if (!temp_map)
 		return (NULL);
-	n_lines = count_lines(*file);
-	if (n_lines <= 0)
-		return (NULL);
-	line = ft_calloc(n_lines + 1, sizeof(char *));
 	i = 0;
-	line[i] = get_next_line(fd);
-	while (line[i])
+	while (i < rows)
 	{
-		if (ft_strlen(line[0]) != ft_strlen(line[i]))
+		temp_map[i] = ft_strdup(map[i]);
+		if (!temp_map[i])
 		{
-			free_array(line);
+			while (i >= 0)
+			{
+				free(temp_map[i]);
+				i--;
+			}
 			return (NULL);
 		}
 		i++;
-		line[i] = get_next_line(fd);
 	}
-	map->cols = ft_strlen(line[0]) - 1;
-	line[i] = NULL;
-	close(fd);
-	return (line);
-}
-
-int	init_map(char *file, t_map *map)
-{
-	int		n_lines;
-	int		i;
-
-	n_lines = count_lines(file);
-	map->map = ft_calloc(n_lines + 1, sizeof(char *));
-	if (!map->map)
-		return (1);
-	i = 0;
-	while (i < n_lines)
-	{
-		map->map[i] = ft_calloc(map->cols + 1, sizeof(char));
-		i++;
-	}
-	map->map[i] = NULL;
-	map->rows = n_lines;
-	return (0);
-}
-
-
-void free_array(char **array)
-{
-	int	i;
-
-	if (!array)
-		return ;
-	if (array)
-	{
-		i = 0;
-		while (array[i])
-		{
-			free(array[i]);
-			array[i] = NULL;
-			i++;
-		}
-		free(array);
-		array = NULL;
-	}
-}
-
-#include <stdlib.h>
-
-void handle_error(t_data *data)
-{
-	get_next_line(-1);
-	if (!data)
-		return;
-	if (data->map)
-	{
-		if (data->map->map)
-			free_array(data->map->map);
-		free(data->map);
-	}
-	if (data->textures)
-		free(data->textures);
-	free(data);
-}
-
-void destroy_textures(t_data *data)
-{
-	if (data->textures->walls)
-		mlx_destroy_image(data->mlx, data->textures->walls);
-	if (data->textures->floor)
-		mlx_destroy_image(data->mlx, data->textures->floor);
-	if (data->textures->player)
-		mlx_destroy_image(data->mlx, data->textures->player);
-	if (data->textures->collectible)
-		mlx_destroy_image(data->mlx, data->textures->collectible);
-	if (data->textures->exit)
-		mlx_destroy_image(data->mlx, data->textures->exit);
+	temp_map[i] = NULL;
+	return (temp_map);
 }
