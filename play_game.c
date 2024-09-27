@@ -16,6 +16,7 @@ void	play_game(t_data *data)
 {
 	mlx_hook(data->win, 2, 1L << 0, key_press, data);
 	mlx_hook(data->win, 17, 1L << 17, close_window, data);
+	mlx_hook(data->win, 22, 1L << 0, resize, data);
 	mlx_loop(data->mlx);
 }
 
@@ -34,6 +35,14 @@ int	key_press(int keycode, t_data *data)
 	return (0);
 }
 
+int	resize(t_data *data, int width, int height)
+{
+	data->width = width;
+	data->height = height;
+	draw_map(data);
+	return (0);
+}
+
 void	walk(t_data *data, int next_y, int next_x)
 {
 	if (data->map->map[next_y][next_x] == '1')
@@ -45,7 +54,7 @@ void	walk(t_data *data, int next_y, int next_x)
 		data->map->collectibles_collected++;
 		data->map->map[next_y][next_x] = '0';
 	}
-	if (data->map->map[next_y][next_x] == 'E')
+	else if (data->map->map[next_y][next_x] == 'E')
 	{
 		if (data->map->collectibles_collected == data->map->collectibles)
 		{
@@ -55,6 +64,5 @@ void	walk(t_data *data, int next_y, int next_x)
 	}
 	data->map->player_y = next_y;
 	data->map->player_x = next_x;
-	put_textures(data);
-	put_player(data);
+	draw_map(data);
 }

@@ -13,9 +13,11 @@
 NAME = so_long
 LIBFTPRINTF = ./ft_printf/libftprintf.a
 LIBFTPRINTF_DIR = ./ft_printf
-LIBMLX = -I./minilibx-linux -L./minilibx-linux -lmlx -lX11 -lXext -lm -lbsd
+MLX = ./minilibx-linux/libmlx.a
+MLX_DIR = ./minilibx-linux
 CC = cc
 CFLAGS = -Wall -Wextra -Werror
+MLX_FLAGS = -L./minilibx-linux -lmlx -lX11 -lXext
 SRCS = ./get_next_line/get_next_line.c ./get_next_line/get_next_line_utils.c \
 		main.c init.c checkers.c clean.c validate_map.c \
 		save_map.c utils.c draw_map.c play_game.c
@@ -24,9 +26,10 @@ RM = rm -rf
 
 all: $(NAME)
 
-$(NAME): $(OBJS) $(MAIN)
+$(NAME): $(OBJS)
 	$(MAKE) -C $(LIBFTPRINTF_DIR)
-	$(CC) $(CFLAGS) -o $(NAME) $(OBJS) $(LIBFTPRINTF) $(LIBMLX)
+	$(MAKE) -C $(MLX_DIR)
+	$(CC) $(CFLAGS) -o $(NAME) $(OBJS) $(LIBFTPRINTF) $(MLX) $(MLX_FLAGS)
 
 %.o: %.c
 	$(CC) $(CFLAGS) -c $< -o $@
@@ -37,6 +40,7 @@ clean:
 
 fclean: clean
 	$(MAKE) fclean -C $(LIBFTPRINTF_DIR)
+	$(MAKE) clean -C $(MLX_DIR)
 	$(RM) $(NAME)
 
 re: fclean all

@@ -87,14 +87,15 @@ void	add_floor(int row, int col, t_map *map);
 
 // draw_map.c
 void	load_textures(t_data *data);
-void	draw_map(t_data *data);
+int		draw_map(t_data *data);
 void	put_textures(t_data *data);
-void	put_player(t_data *data);
 void	put_image(t_data *data, char c, int x, int y);
 
 // play_game.c
 void	play_game(t_data *data);
 int		key_press(int keycode, t_data *data);
+int		resize(t_data *data, int width, int height);
 void	walk(t_data *data, int next_y, int next_x);
+void	move_player(t_data *data, int next_y, int next_x);
 
 #endif
